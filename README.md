@@ -25,10 +25,6 @@ Apex es una aplicación web construida con Next.js que implementa autenticación
    cd tu_repositorio
 
     Instalar dependencias:
-
-    bash
-
-    Copy
     npm install
 
     Crear archivo .env.local en la raíz con las variables:
