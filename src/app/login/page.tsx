@@ -35,14 +35,15 @@ export default function LoginPage() {
       }
 
       if (data.token) {
-        // MVP: guardamos token en localStorage. Para producción considera cookies httpOnly.
+        // MVP: guardamos token en localStorage. Para producción considera cookies httpOnly
         localStorage.setItem("apex_token", data.token);
         router.push("/dashboard"); // crea la página /dashboard después
       } else {
         setError("No se recibió token del servidor.");
       }
-    } catch (err: any) {
-      setError(err?.message || "Error de red");
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error("Error de red");
+      setError(error.message);
     } finally {
       setLoading(false);
     }
@@ -50,9 +51,9 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen bg-black flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-[#0b0b0b] border border-gray-800 rounded-lg p-8 text-white">
+      <div className="w-full max-w-md bg-[#0b0b0b] border border-gray-800 rounded-lg p-8">
         <h2 className="text-3xl font-bold text-blue-400 mb-4">Iniciar sesión — Apex</h2>
-        <p className="text-sm text-green-300 mb-6">Accede a tu cuenta para ver recursos exclusivos.</p>
+        <p className="text-sm text-green-300 mb-6">Accede a tu cuenta para ver recursos e información.</p>
 
         {error && (
           <div className="mb-4 text-sm text-red-400 bg-red-900/20 p-2 rounded">
@@ -87,7 +88,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 mt-2 bg-blue-600 hover:bg-blue-700 rounded font-medium transition disabled:opacity-60"
+            className="w-full py-2 mt-2 bg-blue-600 hover:bg-blue-700 rounded font-medium text-white"
           >
             {loading ? "Verificando..." : "Iniciar sesión"}
           </button>

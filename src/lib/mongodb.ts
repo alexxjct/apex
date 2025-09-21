@@ -6,7 +6,15 @@ if (!MONGODB_URI) {
   throw new Error("Please define the MONGODB_URI environment variable in .env.local");
 }
 
-let cached: { conn: typeof mongoose | null; promise: Promise<typeof mongoose> | null } = (global as any).__mongoose || { conn: null, promise: null };
+interface Cached {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
+}
+
+const cached: Cached = {
+  conn: null,
+  promise: null,
+};
 
 export async function connectToDatabase() {
   if (cached.conn) {
@@ -22,6 +30,11 @@ export async function connectToDatabase() {
     cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongooseInstance) => mongooseInstance);
   }
   cached.conn = await cached.promise;
-  (global as any).__mongoose = cached;
+
+  // Evitar usar 'any', tipar global
+  if (typeof global !== "undefined") {
+    (global as unknown as { __mongoose?: Cached }).__mongoose = cached;
+  }
+
   return cached.conn;
 }

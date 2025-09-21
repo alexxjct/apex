@@ -5,7 +5,8 @@ export async function GET() {
   try {
     await connectToDatabase();
     return NextResponse.json({ ok: true, message: "Connected to MongoDB" });
-  } catch (error: any) {
-    return NextResponse.json({ ok: false, error: error.message }, { status: 500 });
+  } catch (error) {
+    const err = error instanceof Error ? error : new Error("Unknown error");
+    return NextResponse.json({ ok: false, error: err.message }, { status: 500 });
   }
 }

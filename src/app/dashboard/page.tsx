@@ -41,8 +41,9 @@ export default function DashboardPage() {
         }
 
         setUser(data.user);
-      } catch (err: any) {
-        setError(err?.message || "Error de red");
+      } catch (err) {
+        const error = err instanceof Error ? err : new Error("Error de red");
+        setError(error.message);
       } finally {
         setLoading(false);
       }
@@ -80,17 +81,25 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-bold text-blue-400">Dashboard — Apex</h1>
-            <p className="text-sm text-green-300">Bienvenido, {user.username} ({user.role})</p>
+            <p className="text-sm text-green-300">
+              Bienvenido, {user.username} ({user.role})
+            </p>
           </div>
           <div className="space-x-3">
-            <button onClick={() => router.push("/")} className="px-3 py-1 bg-gray-800 rounded">Home</button>
-            <button onClick={handleLogout} className="px-3 py-1 bg-red-600 rounded">Cerrar sesión</button>
+            <button onClick={() => router.push("/")} className="px-3 py-1 bg-gray-800 rounded">
+              Inicio
+            </button>
+            <button onClick={handleLogout} className="px-3 py-1 bg-red-600 rounded">
+              Cerrar sesión
+            </button>
           </div>
         </div>
 
         <section className="mb-6">
           <h2 className="text-lg font-semibold text-blue-300 mb-2">Tu espacio</h2>
-          <p className="text-sm text-gray-300">Accede a los recursos y la información a la que tienes permiso.</p>
+          <p className="text-sm text-gray-300">
+            Accede a los recursos y la información a la que tienes permiso.
+          </p>
         </section>
 
         {user.role === "admin" ? (
@@ -99,7 +108,6 @@ export default function DashboardPage() {
             <p className="text-sm text-gray-300 mb-3">
               Puedes ver información administrativa. (Lista de usuarios abajo)
             </p>
-
             <AdminUsersList tokenKey="apex_token" />
           </section>
         ) : (
@@ -134,8 +142,9 @@ function AdminUsersList({ tokenKey }: { tokenKey: string }) {
           return;
         }
         setUsers(data.users || []);
-      } catch (e: any) {
-        setErr(e?.message || "Error de red");
+      } catch (e) {
+        const error = e instanceof Error ? e : new Error("Error de red");
+        setErr(error.message);
       } finally {
         setLoading(false);
       }

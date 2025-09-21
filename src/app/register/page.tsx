@@ -45,8 +45,9 @@ export default function RegisterPage() {
       setTimeout(() => {
         router.push("/login");
       }, 1500);
-    } catch (err: any) {
-      setError(err?.message || "Error de red");
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error("Error de red");
+      setError(error.message);
     } finally {
       setLoading(false);
     }
@@ -54,9 +55,9 @@ export default function RegisterPage() {
 
   return (
     <main className="min-h-screen bg-black flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-[#0b0b0b] border border-gray-800 rounded-lg p-8 text-white">
+      <div className="w-full max-w-md bg-[#0b0b0b] border border-gray-800 rounded-lg p-8">
         <h2 className="text-3xl font-bold text-green-400 mb-4">Registro — Apex</h2>
-        <p className="text-sm text-blue-300 mb-6">Crea una cuenta para acceder a recursos exclusivos.</p>
+        <p className="text-sm text-blue-300 mb-6">Crea una cuenta para acceder a recursos e información.</p>
 
         {error && (
           <div className="mb-4 text-sm text-red-400 bg-red-900/20 p-2 rounded">
@@ -97,12 +98,11 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 mt-2 bg-green-600 hover:bg-green-700 rounded font-medium transition disabled:opacity-60"
+            className="w-full py-2 mt-2 bg-green-600 hover:bg-green-700 rounded font-medium text-white"
           >
             {loading ? "Registrando..." : "Registrarse"}
           </button>
         </form>
-
         <p className="mt-4 text-sm text-gray-400">
           ¿Ya tienes cuenta?{" "}
           <a href="/login" className="text-blue-300 hover:underline">

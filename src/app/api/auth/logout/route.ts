@@ -8,8 +8,11 @@ export async function POST(req: Request) {
     // Guardar token como revocado (si no existe)
     await RevokedToken.create({ token });
     return NextResponse.json({ ok: true, message: "Token revoked" });
-  } catch (err: any) {
+  } catch (err) {
     console.error("LOGOUT ERROR:", err);
-    return NextResponse.json({ error: err.message || "Server error" }, { status: 401 });
+
+    const error = err instanceof Error ? err : new Error("Unknown error");
+
+    return NextResponse.json({ error: error.message || "Server error" }, { status: 401 });
   }
 }

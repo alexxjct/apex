@@ -3,10 +3,15 @@ import bcrypt from "bcrypt";
 import { connectToDatabase } from "@/lib/mongodb";
 import { User } from "@/models/User";
 
+interface RegisterRequestBody {
+  username?: unknown;
+  password?: unknown;
+}
+
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { username, password } = body || {};
+    const body: RegisterRequestBody = await req.json();
+    const { username, password } = body;
 
     if (!username || !password) {
       return NextResponse.json({ error: "username and password required" }, { status: 400 });
@@ -36,9 +41,12 @@ export async function POST(req: Request) {
 
     await user.save();
 
-    return NextResponse.json({ ok: true, message: "User created" }, { status: 201 });
-  } catch (err: any) {
+    return NextResponse.json({ ok: true, message: "User registered successfully" });
+  } catch (err) {
     console.error("REGISTER ERROR:", err);
-    return NextResponse.json({ error: err.message || "Server error" }, { status: 500 });
+
+    const error = err instanceof Error ? err : new Error("Server error");
+
+    return NextResponse.json({ error: error.message || "Server error" }, { status: 500 });
   }
 }
